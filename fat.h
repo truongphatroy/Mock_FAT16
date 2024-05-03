@@ -93,10 +93,11 @@ typedef struct
 }Start_Area_t;
 
 Fat_Status_t readBootSector(FILE* pFile);
+Fat_Status_t CheckBootSignature(FILE* pFile);
 Fat_Status_t readSectors(FILE* pFile, uint32_t IndexSector, uint32_t count, void* bufferOut);
-Fat_Status_t readFat(FILE* pFile);
-Fat_Status_t readDirectory(FILE* pFile,uint16_t StartDirector);
 void FAT_Read_File(FILE *pFile, uint32_t Firtclusterindex);
+Fat_Status_t readDirectory(FILE* pFile,uint16_t StartDirector);
+uint16_t FAT_Find_Next_Cluster(FILE *pFile, uint16_t curr_IdxCluster);
 Fat_Status_t openFile(uint8_t *fileName);
 void closeFile();
 void closeFAT();
