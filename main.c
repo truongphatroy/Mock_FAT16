@@ -6,7 +6,7 @@ extern uint32_t FileCount;
 
 int main()
 {
-    if(openFile("floppy.img") != FAT_OK)
+    if(openFile("demoWinImage.IMA") != FAT_OK)
     {
     	closeFile();
         return 0;
@@ -21,6 +21,8 @@ int main()
         closeFile();
         return 0;
     }
+    printf("|--Root Directory\n");
+    Print_Folder_Open();
     if(readDirectory(disk,St.StartRootDir) != FAT_OK)
     {
         closeFile();
@@ -33,7 +35,7 @@ int main()
 		int userChoice = -1;
 		do
 		{
-			printf("\nSelect :_");
+			printf("\nSelect : ");
 			scanf("%d" ,&userChoice);
 			fflush(stdin);
 		}while(userChoice <= -1);
@@ -44,19 +46,27 @@ int main()
 		}
 		else if(userChoice > FileCount)
 		{
-			printf("\nSelect again:_");
+			printf("\nSelect again: ");
 		}
 		else
 		{
 			if(Files[userChoice - 1].isFolder)
 			{
 				system("cls");
+				Print_Folder_Open();
 				readDirectory(disk,Files[userChoice - 1].FirstCluster + St.StartData_Area - 2);
-				printf("b. <=== Back\n");
+				if(Files[userChoice - 1].FirstCluster == 0)
+				{
+					readDirectory(disk,St.StartRootDir);
+				}
+				printf("1. <=== Reset\n");
+				printf("2. <=== Back\n");
 			}
 			else
 			{
+				system("cls");
 				FAT_Read_File(disk, Files[userChoice - 1].FirstCluster);
+				printf("2. <=== Back\n");
 			}
 		}
 	}

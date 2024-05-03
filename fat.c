@@ -47,7 +47,6 @@ Fat_Status_t readDirectory(FILE* pFile,uint16_t StartDirectorSector)
 	Fat_Status_t status = FAT_OK;
 	FileCount = 0;
 	uint16_t indexStart =  StartDirectorSector;
-	Print_Folder_Open();
 	while(1)
 	{
 		RootDirectory_t *RootDirectoryBuff = (RootDirectory_t*) malloc(BootSector.BytsPerSec);
@@ -72,8 +71,9 @@ Fat_Status_t readDirectory(FILE* pFile,uint16_t StartDirectorSector)
 	        Print_One_Entry(&RootDirectoryBuff[idx],FileCount);
 	    }
 	    free(RootDirectoryBuff);
+	    indexStart = indexStart+1 ;
 	}
-	indexStart++;
+	
     return status;
 }
 
@@ -82,7 +82,7 @@ Fat_Status_t readDirectory(FILE* pFile,uint16_t StartDirectorSector)
 uint16_t FAT_Find_Next_Cluster(FILE *pFile, uint16_t current_fat_entry)
 {
     uint8_t tmpFatValue[2]; 	//Save 12 bit of 2byte 
-    uint16_t FatValue;			
+    uint16_t FatValue;		
 	//Offset
 	uint32_t Offset = (BootSector.BytsPerSec*BootSector.RsvdSecCnt + (current_fat_entry * 3) / 2);
 	fseek(pFile, Offset,0);
@@ -90,7 +90,7 @@ uint16_t FAT_Find_Next_Cluster(FILE *pFile, uint16_t current_fat_entry)
     tmpFatValue[0] = fgetc(pFile);
     tmpFatValue[1] = fgetc(pFile);
 
-	//printf("\n%x	%x\n",DataOfIndex[1],DataOfIndex[0]);
+
     if (current_fat_entry % 2 == 0)
 	{
         FatValue = (tmpFatValue[0] | ((uint16_t)(tmpFatValue[1] & 0xF) << 8));
@@ -108,19 +108,15 @@ void FAT_Read_File(FILE *pFile, uint32_t Firtclusterindex)
 	uint32_t sectorindex = St.StartData_Area + index - 2;
 	do
 	{
-//		printf("\n==================%d\n",index );
+		printf("\n==================%d\n",index );
 		uint8_t *ClusterBuff = (uint8_t*)malloc(BootSector.BytsPerSec * BootSector.SecPerClus);	    //Allocation 1 cluster	
 		readSectors(pFile, sectorindex,BootSector.SecPerClus,ClusterBuff);
 		printf("%s ", ClusterBuff);		
 		free(ClusterBuff);		
 		index = FAT_Find_Next_Cluster(pFile,index);
 		sectorindex = St.StartData_Area + index - 2;
-		if(index >= 0xFF8)
-		{
-		    break;
-		}
 		
-	}while(1);
+	}while(index < 0xFF8);
 	printf("\n");
 }
 
