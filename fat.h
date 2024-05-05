@@ -54,25 +54,6 @@ typedef struct
 } RootDirectory_t;
 #pragma pack()
 
-typedef struct
-{
-	uint16_t day :5;
-	uint16_t month : 4;
-	uint16_t year : 7;
-}Date16_t;
-typedef struct
-{
-	uint16_t sec : 5;
-	uint16_t hour : 6;
-	uint16_t min : 5;
-}Time16_t;
-typedef union
-{
-	uint16_t TimeDate;		
-	Date16_t Date;
-	Time16_t Time;
-}Read_TimeDate;
-
 typedef enum
 {
     FAT_ERR = 0,
@@ -92,14 +73,13 @@ typedef struct
     uint16_t StartData_Area;
 }Start_Area_t;
 
-Fat_Status_t readBootSector(FILE* pFile);
-Fat_Status_t CheckBootSignature(FILE* pFile);
-Fat_Status_t readSectors(FILE* pFile, uint32_t IndexSector, uint32_t count, void* bufferOut);
-void FAT_Read_File(FILE *pFile, uint32_t Firtclusterindex);
-Fat_Status_t readDirectory(FILE* pFile,uint16_t StartDirector);
-uint16_t FAT_Find_Next_Cluster(FILE *pFile, uint16_t curr_IdxCluster);
+
+
+
+
+
+
 Fat_Status_t openFile(uint8_t *fileName);
-void closeFile();
-void closeFAT();
+Fat_Status_t closeFile();
 
 #endif
