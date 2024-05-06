@@ -3,13 +3,6 @@
 FILE *pFile = NULL;
 
 
-Fat_Status_t FAT_readSectors(BootSecotor_t *BootSector, uint32_t IndexSector, uint32_t count, void* bufferOut)
-{
-    fseek(pFile, IndexSector * BootSector->BytsPerSec, SEEK_SET);
-    Fat_Status_t status = (fread(bufferOut, BootSector->BytsPerSec, count, pFile) == count);
-    return status;
-}
-
 Fat_Status_t FAT_readBootSector(BootSecotor_t *BootSector)
 {
 	Fat_Status_t status = FAT_OK;
@@ -33,8 +26,6 @@ Fat_Status_t FAT_CheckBootSignature()
     }
 	return status;
 }
-
-
 
 //input: current indexCluster
 //Output: Next index Cluster
@@ -63,20 +54,32 @@ uint16_t FAT_FindNextCluster(BootSecotor_t *BootSector, uint16_t current_fat_ent
 
 //Input : StartDirectorSector, offset in file
 //Output: Directory entry
-Fat_Status_t FAT_Read_1DirEntry(uint32_t Offset, uint8_t *OutputBuff)
+uint8_t  *FAT_Read_1DirEntry(uint32_t Offset)
 {
 	Fat_Status_t status = FAT_OK;
 	fseek(pFile, Offset, SEEK_SET);
-	status = fread(OutputBuff, 32, 1, pFile);
-    return status;
+	
+	uint8_t *OutputBuff = (uint8_t *)malloc(32);	//free it after call 
+	if(OutputBuff == NULL)
+	{
+		return NULL;
+	}
+	status = fread(OutputBuff, 1, 32, pFile);
+    return OutputBuff;
 }
 
 
-Fat_Status_t FAT_ReadFile(BootSecotor_t *BootSector, uint32_t cluster)
+
+void ShitfOffset(uint32_t Offset)
 {
-	Fat_Status_t status = FAT_OK;
-	return status;
+	fseek(pFile,Offset,SEEK_SET);
 }
+
+uint8_t Fgetc()
+{
+	return fgetc(pFile);
+}
+
 
 Fat_Status_t openFile(uint8_t *fileName)
 {

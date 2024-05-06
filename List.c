@@ -9,7 +9,7 @@ void ListInitialize(LinkedList *list)
     list->tail = NULL;
 }
 
-void ListAddHead(LinkedList *list, void* data) 
+void ListAddHead(LinkedList *list, uint32_t data) 
 {
     Node *node = (Node*) malloc(sizeof(Node));
     node->data = data;
@@ -26,7 +26,7 @@ void ListAddHead(LinkedList *list, void* data)
 }
 
 
-void ListAddTail(LinkedList *list, void *data) 
+void ListAddTail(LinkedList *list, uint32_t data) 
 {
     Node *node = (Node*) malloc(sizeof(Node));
     node->data = data;
@@ -61,17 +61,19 @@ void ListDeleteTail(LinkedList *list)
     if (list->head != NULL)
 	{
         Node *current = list->head;
-        Node *prev;
+        Node *prev = NULL;
         while (current->next != NULL)
 		{
             prev = current;
             current = current->next;
         }
         free(current);
-        if (prev != NULL) {
+        if (prev != NULL) 
+		{
             prev->next = NULL;
             list->tail = prev;
-        } else 
+        } 
+		else 
 		{
             list->head = NULL;
             list->tail = NULL;
@@ -99,6 +101,20 @@ void ListDelete(LinkedList *list, Node *node) {
     }
 
     free(node);
+}
+void ListDeleteAll(LinkedList *list) 
+{
+    Node *current = list->head;
+    Node *next;
+
+    while (current != NULL) 
+    {
+        next = current->next;  
+        free(current);   
+        current = next;   
+    }
+    list->head = NULL;
+    list->tail = NULL;
 }
 
 

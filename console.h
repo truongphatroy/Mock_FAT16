@@ -6,4 +6,11 @@
 #include "List.h"
 
 
+typedef struct
+{
+    uint16_t isFolder;
+    uint16_t FirstCluster;
+}Fat_Cluster_t;
+
+
 #endif

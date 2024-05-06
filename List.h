@@ -7,7 +7,7 @@
 // Organize Data
 typedef struct _node 
 {
-    void *data;
+    uint32_t data;
     struct _node *next;
 } Node;
 
@@ -18,8 +18,9 @@ typedef struct _linkedLidt
 } LinkedList;
 
 void ListInitialize(LinkedList *list);
-void ListAddHead(LinkedList *list, void* data);
-void ListAddTail(LinkedList *list, void *data);
+void ListAddHead(LinkedList *list, uint32_t data);
+void ListAddTail(LinkedList *list, uint32_t data);
 void ListDeleteTail(LinkedList *list);
+void ListDeleteAll(LinkedList *list);
 #endif
 

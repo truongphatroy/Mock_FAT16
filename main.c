@@ -6,7 +6,6 @@ int main()
 	{
 		return ;
 	}
-	FAT_ReadDirectory();
-	closeFile();
+	FAT_DisplayConsole();
     return 0;
 }

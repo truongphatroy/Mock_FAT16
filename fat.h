@@ -60,24 +60,6 @@ typedef enum
     FAT_OK = 1,
 }Fat_Status_t;
 
-typedef struct
-{
-    uint16_t isFolder;
-    uint16_t FirstCluster;
-}Fat_Cluster_t;
-
-typedef struct
-{
-    uint16_t StartFAT;
-    uint16_t StartRootDir;
-    uint16_t StartData_Area;
-}Start_Area_t;
-
-
-
-
-
-
 
 Fat_Status_t openFile(uint8_t *fileName);
 Fat_Status_t closeFile();
