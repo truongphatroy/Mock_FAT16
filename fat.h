@@ -24,11 +24,11 @@ typedef struct
     uint8_t SecPerClus;			//0x0D
     uint16_t RsvdSecCnt;		//0x0E     
 
-    uint8_t NumFATs;			//0x10     
+    uint8_t NumFATs;			//0x10   
     uint16_t RootEntCnt;		//0x11     
     uint16_t TotSec16;			//0x13     
     uint8_t Media;				//0x15     
-    uint16_t FATSz16; 			// 0x16      sectors per FAT
+    uint16_t FATSz16; 			//0x16      sectors per FAT
     uint16_t SecPerTrk;			//0x18     
     uint16_t NumHeads;			//0x1A     
     uint32_t HiddSec;			//0x1C     

@@ -2,7 +2,7 @@
 
 int main()
 {
-	if(FAT_fileSystem_Init("demoWinImage.IMA") != FAT_OK)
+	if(FAT_fileSystem_Init("floppy.img") != FAT_OK)
 	{
 		return 0;
 	}

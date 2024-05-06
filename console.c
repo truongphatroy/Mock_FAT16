@@ -121,11 +121,10 @@ Fat_Status_t FAT_ReadDirEntry(uint16_t FirstCluster)
 				AdrrCurrentCluster+= 32;
 				continue;
 			}
-			
+
 			GetDataToprint(DirecEntry , &DirecEntryPrint);
-			
-			Files[FileCount].isFolder= DirecEntryPrint.isFolder;
 			Files[FileCount].FirstCluster = DirecEntry.FstClusLO;
+			Files[FileCount].isFolder = DirecEntryPrint.isFolder;
 			FileCount++;
 			Print_DirectoryEntry(&DirecEntryPrint,FileCount);
 			
@@ -170,6 +169,7 @@ Fat_Status_t FAT_DisplayConsole()
 	status = FAT_ReadRootDir();
 	ListAddTail(&ListSaveDirectory, 1);
 	ListPrint(&ListSaveDirectory);
+	
 	while(1)
 	{
 		int32_t userChoice = -1;
