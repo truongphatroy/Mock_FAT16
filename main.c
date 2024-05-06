@@ -4,8 +4,12 @@ int main()
 {
 	if(FAT_fileSystem_Init("floppy.img") != FAT_OK)
 	{
-		return ;
+		
+		return 0;
 	}
-	FAT_DisplayConsole();
+	if(FAT_DisplayConsole() != FAT_OK)
+	{
+		return 0;
+	}
     return 0;
 }

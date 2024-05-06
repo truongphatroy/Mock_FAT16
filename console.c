@@ -79,7 +79,6 @@ Fat_Status_t FAT_ReadRootDir()
 		
 		Files[FileCount].isFolder= DirecEntryPrint.isFolder;
 		Files[FileCount].FirstCluster = DirecEntry.FstClusLO;
-		printf("-------------clus%d\n", Files[FileCount].FirstCluster);
 		FileCount++;
 		
 		Print_DirectoryEntry(&DirecEntryPrint,FileCount);
@@ -129,7 +128,6 @@ Fat_Status_t FAT_ReadDirEntry(uint16_t FirstCluster)
 			
 			Files[FileCount].isFolder= DirecEntryPrint.isFolder;
 			Files[FileCount].FirstCluster = DirecEntry.FstClusLO;
-			printf("-------------clus%d\n", Files[FileCount].FirstCluster);
 			FileCount++;
 			Print_DirectoryEntry(&DirecEntryPrint,FileCount);
 			
@@ -175,15 +173,15 @@ Fat_Status_t FAT_DisplayConsole()
 	ListAddHead(&ListSaveDirectory, 1);
 	while(1)
 	{
-		int32_t userChoice = -2;
+		int32_t userChoice = -1;
 		do
 		{
-			printf("\n0.Exit : ");
-			printf("\n-1.Back : ");
-			printf("\nSelect : ");
+			printf("\n 0.Exit  ");
+			printf("\n-1.Back  ");
+			printf("\n Select : ");
 			scanf("%d" ,&userChoice);
 			fflush(stdin);
-		}while(userChoice <= -2);
+		}while(userChoice < -1);
 		if(userChoice == 0)
 		{
 			system("cls");
@@ -198,14 +196,14 @@ Fat_Status_t FAT_DisplayConsole()
 		else if(userChoice == -1)
 		{
 			ListDeleteTail(&ListSaveDirectory);
-			if(ListSaveDirectory.head->data == 1)
+			if(ListSaveDirectory.head == NULL)
 			{
 				system("cls");
 				printf("Bai Bai :((<3))");
 				status = closeFile();
 				return status;
 			}
-			if(ListSaveDirectory.head == ListSaveDirectory.tail)
+			if(ListSaveDirectory.head->data == 1)
 			{
 				system("cls");
 				status = FAT_ReadRootDir();
@@ -234,7 +232,6 @@ Fat_Status_t FAT_DisplayConsole()
 			}
 		}
 	}
-	status = closeFile();
 	return status;
 }
 
