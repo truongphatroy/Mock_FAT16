@@ -99,10 +99,9 @@ Fat_Status_t FAT_ReadDirEntry(uint16_t FirstCluster)
 		+ (32 * BootSector.RootEntCnt + BootSector.BytsPerSec - 1) / BootSector.BytsPerSec;
 	FileCount = 0;
 	do
-	{		
+	{
 		//Address Start of FirstCluster
 		uint32_t AdrrCurrentCluster = (SecStartData_Area + (currentCluster - 2)*BootSector.SecPerClus)*BootSector.BytsPerSec;
-		
 		uint16_t i;
 		for(i = 0; i < BootSector.BytsPerSec *BootSector.SecPerClus ; i++)
 		{
@@ -113,12 +112,11 @@ Fat_Status_t FAT_ReadDirEntry(uint16_t FirstCluster)
 			{
 				return FAT_ERR;
 			}
-			
 			if(DirecEntry.Name[0] == 0xE5 || DirecEntry.Name[0] == 0x00)
 			{
 				return FAT_OK;
 			}
-			if(DirecEntry.Attr == 0x0F)
+			if(DirecEntry.Attr == 0x0F || DirecEntry.Name[0] == 0x2E)
 			{
 				AdrrCurrentCluster+= 32;
 				continue;
@@ -147,7 +145,7 @@ void FAT_ReadFile(uint16_t FirstCluster)
 	uint32_t SecStartData_Area = BootSector.RsvdSecCnt + BootSector.NumFATs * BootSector.FATSz16  
 		+ (32 * BootSector.RootEntCnt + BootSector.BytsPerSec - 1) / BootSector.BytsPerSec;
 	do
-	{		
+	{
 		//Address Start of FirstCluster
 		uint32_t AdrrFirstCluster = (SecStartData_Area + (currentCluster - 2)*BootSector.SecPerClus)*BootSector.BytsPerSec;
 		ShitfOffset(AdrrFirstCluster);
@@ -170,7 +168,8 @@ Fat_Status_t FAT_DisplayConsole()
 	Fat_Status_t status = FAT_OK;
 	Print_Folder_Open();
 	status = FAT_ReadRootDir();
-	ListAddHead(&ListSaveDirectory, 1);
+	ListAddTail(&ListSaveDirectory, 1);
+	ListPrint(&ListSaveDirectory);
 	while(1)
 	{
 		int32_t userChoice = -1;
@@ -182,55 +181,64 @@ Fat_Status_t FAT_DisplayConsole()
 			scanf("%d" ,&userChoice);
 			fflush(stdin);
 		}while(userChoice < -1);
-		if(userChoice == 0)
-		{
-			system("cls");
-			printf("Bai Bai :((<3))");
-			ListDeleteAll(&ListSaveDirectory);
-			return closeFile();;
-		}
-		else if(userChoice > FileCount)
-		{
-			printf("\nSelect again: ");
-		}
-		else if(userChoice == -1)
-		{
-			ListDeleteTail(&ListSaveDirectory);
-			if(ListSaveDirectory.head == NULL)
-			{
-				system("cls");
-				printf("Bai Bai :((<3))");
-				status = closeFile();
-				return status;
-			}
-			if(ListSaveDirectory.head->data == 1)
-			{
-				system("cls");
-				status = FAT_ReadRootDir();
-				ListDeleteTail(&ListSaveDirectory);
-			}
-			else
-			{
-				system("cls");
-				status = FAT_ReadDirEntry(ListSaveDirectory.tail->data);
-				ListDeleteTail(&ListSaveDirectory);
-			}
-		}
-		else
-		{
-			if(Files[userChoice - 1].isFolder)
-			{
-				ListAddHead(&ListSaveDirectory, Files[userChoice-1].FirstCluster);
-				system("cls");
-				Print_Folder_Open();
-				status = FAT_ReadDirEntry(Files[userChoice-1].FirstCluster);
-			}
-			else
-			{
-				system("cls");
-				FAT_ReadFile(Files[userChoice-1].FirstCluster);
-			}
-		}
+		
+		switch (userChoice)
+        {
+            case 0:
+                system("cls");
+                printf("Bai Bai :((<3))");
+                ListDeleteAll(&ListSaveDirectory);
+                return closeFile();
+            case -1:
+                ListDeleteTail(&ListSaveDirectory);
+                if (ListSaveDirectory.head == NULL)
+                {
+                    system("cls");
+                    printf("Bai Bai :((<3))");
+                    status = closeFile();
+                    return status;
+                }
+                if (ListSaveDirectory.tail->data == 1)
+                {
+                    system("cls");
+                    Print_Folder_Open();
+                    status = FAT_ReadRootDir();
+                    ListPrint(&ListSaveDirectory);
+                }
+                else
+                {
+                    system("cls");
+                    Print_Folder_Open();
+                    status = FAT_ReadDirEntry(ListSaveDirectory.tail->data);
+                    ListPrint(&ListSaveDirectory);
+                }
+                break;
+            default:
+                if (userChoice > FileCount)
+                {
+                    printf("\nSelect again: ");
+                }
+                else
+                {
+                    if (Files[userChoice - 1].isFolder)
+                    {
+                        system("cls");
+                        Print_Folder_Open();
+                        status = FAT_ReadDirEntry(Files[userChoice - 1].FirstCluster);
+                        ListAddTail(&ListSaveDirectory, Files[userChoice - 1].FirstCluster);
+                        ListPrint(&ListSaveDirectory);
+                    }
+                    else
+                    {
+                        system("cls");
+                        FileCount = 0;
+                        FAT_ReadFile(Files[userChoice - 1].FirstCluster);
+						ListAddTail(&ListSaveDirectory, Files[userChoice - 1].FirstCluster);
+                        ListPrint(&ListSaveDirectory);
+                    }
+                }
+                break;
+        }
 	}
 	return status;
 }

@@ -60,6 +60,12 @@ typedef enum
     FAT_OK = 1,
 }Fat_Status_t;
 
+uint8_t Fgetc();
+void ShitfOffset(uint32_t Offset);
+Fat_Status_t FAT_readBootSector(BootSecotor_t *BootSector);
+Fat_Status_t FAT_CheckBootSignature();
+uint16_t FAT_FindNextCluster(BootSecotor_t *BootSector, uint16_t current_fat_entry);
+uint8_t  *FAT_Read_1DirEntry(uint32_t Offset);
 
 Fat_Status_t openFile(uint8_t *fileName);
 Fat_Status_t closeFile();

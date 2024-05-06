@@ -22,5 +22,6 @@ void ListAddHead(LinkedList *list, uint32_t data);
 void ListAddTail(LinkedList *list, uint32_t data);
 void ListDeleteTail(LinkedList *list);
 void ListDeleteAll(LinkedList *list);
+void ListPrint(LinkedList *list);
 #endif
 

@@ -9,7 +9,7 @@ void ListInitialize(LinkedList *list)
     list->tail = NULL;
 }
 
-void ListAddHead(LinkedList *list, uint32_t data) 
+void ListAddHead(LinkedList *list, uint32_t data)
 {
     Node *node = (Node*) malloc(sizeof(Node));
     node->data = data;
@@ -117,6 +117,16 @@ void ListDeleteAll(LinkedList *list)
     list->tail = NULL;
 }
 
+void ListPrint(LinkedList *list)
+{
+	Node* current = list->head;
+	while(current->next != NULL)
+	{
+		printf("===>%d", current->data);
+		current = current->next;
+	}
+	printf("\n");
+}
 
 
 

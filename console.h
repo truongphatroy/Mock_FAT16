@@ -12,5 +12,11 @@ typedef struct
     uint16_t FirstCluster;
 }Fat_Cluster_t;
 
+Fat_Status_t FAT_fileSystem_Init(uint8_t *fileName);
+Fat_Status_t FAT_ReadRootDir();
+Fat_Status_t FAT_ReadDirEntry(uint16_t FirstCluster);
+void FAT_ReadFile(uint16_t FirstCluster);
+Fat_Status_t FAT_DisplayConsole();
+
 
 #endif
