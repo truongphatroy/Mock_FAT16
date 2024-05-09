@@ -16,11 +16,14 @@
 /* MAIN FUNCTON													*/
 /*==========================================================================*/
 
-int main(int argc, char const *argv[])
+int main(int argc, char **argv)
 {
-	/* Init Setting */
-	// if (FAT_fileSystem_Init("demoWinImage.IMA") != FAT_OK)
-	if (FAT_fileSystem_Init("floppy.img") != FAT_OK)
+	if (2 != argc)
+	{
+		printf("Please input file name: main.exe floppy.img\n");
+		return 1;
+	}
+	if (FAT_fileSystem_Init(argv[1]) != FAT_OK)
 	{
 		return 0;
 	}

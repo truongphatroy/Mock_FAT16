@@ -55,7 +55,8 @@ Fat_Status_t FAT_fileSystem_Init(uint8_t *fileName)
 // Get datto from fat.c, fat.h to print
 void GetDataToprint(RootDirectory_t Input, DirectoryEntry_Printf_t *Output)
 {
-	strcpy(Output->FileName, Input.Name);
+	// strcpy(Output->FileName, Input.Name);
+	memcpy(Output->FileName, Input.Name, sizeof(Input.Name));
 	strcpy(Output->Ext, Input.Extension);
 	Output->Date = Input.WrtDate;
 	Output->Time = Input.WrtTime;
@@ -138,12 +139,6 @@ Fat_Status_t FAT_ReadCheckRootDirEntry(int32_t fileNo)
 			FileEntry.isFolder = DirecEntryPrint.isFolder;
 			FileEntry.FirstCluster = DirecEntry.FstClusLO;
 		}
-
-		/*no use Files*/
-		// Files[FileCount].isFolder = DirecEntryPrint.isFolder;
-		// Files[FileCount].FirstCluster = DirecEntry.FstClusLO;
-
-		// Print_DirectoryEntry(&DirecEntryPrint, FileCount);
 		AddrStartRootDir += 32;
 		free(DirEntryBuff);
 	}
@@ -311,6 +306,10 @@ Fat_Status_t FAT_DisplayConsole()
 			ListDeleteAll(&ListSaveDirectory);
 			return closeFile();
 		case -1: // back
+			if (ListSaveDirectory.tail->data == 1)
+			{
+				continue;
+			}
 			ListDeleteTail(&ListSaveDirectory);
 			if (ListSaveDirectory.head == NULL)
 			{
