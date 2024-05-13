@@ -18,11 +18,11 @@
 
 BootSecotor_t BootSector;
 
-LinkedList ListSaveDirectory;
+static LinkedList ListSaveDirectory;
 
-uint16_t FileCount;
+static uint16_t FileCount;
 
-Fat_Cluster_t FileEntry;
+static Fat_Cluster_t FileEntry;
 
 /*==========================================================================*/
 /* Declare Global Variable													*/
@@ -138,6 +138,7 @@ Fat_Status_t FAT_ReadCheckRootDirEntry(int32_t fileNo)
 			// FileEntry.FirstCluster = DirecEntryPrint.isFolder;
 			FileEntry.isFolder = DirecEntryPrint.isFolder;
 			FileEntry.FirstCluster = DirecEntry.FstClusLO;
+			break;
 		}
 		AddrStartRootDir += 32;
 		free(DirEntryBuff);
@@ -168,10 +169,12 @@ Fat_Status_t FAT_ReadCheckDirEntry(uint32_t FirstCluster, int32_t fileNo)
 			{
 				return FAT_ERR;
 			}
+			// check entry is deleted or end of entries
 			if (DirecEntry.Name[0] == 0xE5 || DirecEntry.Name[0] == 0x00)
 			{
 				return FAT_OK;
 			}
+			// check "." and long file name entry
 			if (DirecEntry.Attr == 0x0F || DirecEntry.Name[0] == 0x2E)
 			{
 				AdrrCurrentCluster += 32;
@@ -187,6 +190,7 @@ Fat_Status_t FAT_ReadCheckDirEntry(uint32_t FirstCluster, int32_t fileNo)
 			{
 				FileEntry.isFolder = DirecEntryPrint.isFolder;
 				FileEntry.FirstCluster = DirecEntry.FstClusLO;
+				break;
 			}
 
 			/* end new code*/
@@ -284,8 +288,7 @@ Fat_Status_t FAT_DisplayConsole()
 	Print_Folder_Open();
 	status = FAT_ReadRootDir();
 	ListAddTail(&ListSaveDirectory, 1); // Add root directory to the save directory list
-	ListPrint(&ListSaveDirectory);		// Print the list
-	ListPrint(&ListSaveDirectory);
+	// ListPrint(&ListSaveDirectory);		// Print the list
 	while (1)
 	{
 		int32_t userChoice = -1;
@@ -311,13 +314,6 @@ Fat_Status_t FAT_DisplayConsole()
 				continue;
 			}
 			ListDeleteTail(&ListSaveDirectory);
-			if (ListSaveDirectory.head == NULL)
-			{
-				system("cls");
-				// printf("Bai Bai :((<3))");
-				status = closeFile();
-				return status;
-			}
 			if (ListSaveDirectory.tail->data == 1)
 			{
 				system("cls");
